@@ -8,7 +8,7 @@ Author:              Vincent Hanquez <vincent@snarc.org>
 Maintainer:          Vincent Hanquez <vincent@snarc.org>
 Synopsis:            Gobject Introspection format GIR parsing
 Build-Type:          Simple
-Category:            Network
+Category:            Data
 stability:           experimental
 Cabal-Version:       >=1.6
 Homepage:            http://github.com/vincenthz/hs-gir
