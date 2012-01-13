@@ -370,7 +370,7 @@ mapRepository repository = do
 
 		parseCallback e = Callback
 			{ callbackName = getAttrib "name" e
-			, callbackCType = getMaybeAttrib "c:type" e
+			, callbackCType = getAttrib "c:type" e
 			, callbackReturnValue = getReturnValue e
 			, callbackParameters = getParameters e
 			}

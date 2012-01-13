@@ -106,7 +106,7 @@ data Function = Function
 
 data Callback = Callback
 	{ callbackName        :: String
-	, callbackCType       :: Maybe String
+	, callbackCType       :: String
 	, callbackReturnValue :: ReturnValue
 	, callbackParameters  :: [Parameter]
 	} deriving (Show,Eq,Data,Typeable)
