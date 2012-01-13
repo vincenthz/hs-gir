@@ -105,16 +105,16 @@ mapRepository repository = do
 			foldM parseNamespaceContent namespace $ elContent e
 		
 		parseNamespaceContent a (Elem e)
-			| elFQname e == "alias" = parseAlias e >>= appendNamespace a . NsAlias
-			| elFQname e == "function" = parseFunction e >>= appendNamespace a . NsFunction
-			| elFQname e == "constant" = parseConstant e >>= appendNamespace a . NsConstant
-			| elFQname e == "class"    = parseClass e >>= appendNamespace a . NsClass
-			| elFQname e == "interface"= parseInterface e >>= appendNamespace a . NsInterface
-			| elFQname e == "enumeration"= parseEnumeration e >>= appendNamespace a . NsEnumeration
-			| elFQname e == "bitfield"= parseBitfield e >>= appendNamespace a . NsBitfield
-			| elFQname e == "union"    = parseUnion e >>= appendNamespace a . NsUnion
-			| elFQname e == "record"   = parseRecord e >>= appendNamespace a . NsRecord
-			| elFQname e == "callback" = return (parseCallback e) >>= appendNamespace a . NsCallback
+			| elFQname e == "alias" = parseAlias e >>= appendNamespaceAlias a
+			| elFQname e == "function" = parseFunction e >>= appendNamespaceFunction a
+			| elFQname e == "constant" = parseConstant e >>= appendNamespaceConstant a
+			| elFQname e == "class"    = parseClass e >>= appendNamespaceClass a
+			| elFQname e == "interface"= parseInterface e >>= appendNamespaceInterface a
+			| elFQname e == "enumeration"= parseEnumeration e >>= appendNamespaceEnumeration a
+			| elFQname e == "bitfield"= parseBitfield e >>= appendNamespaceBitfield a
+			| elFQname e == "union"    = parseUnion e >>= appendNamespaceUnion a
+			| elFQname e == "record"   = parseRecord e >>= appendNamespaceRecord a
+			| elFQname e == "callback" = return (parseCallback e) >>= appendNamespaceCallback a
 			| otherwise = putStrLn ("unhandled namespace element: " ++ (show $ fqname $ elName e)) >> return a
 		parseNamespaceContent a (CRef c) = putStrLn ("cref: " ++ show c) >> return a
 		parseNamespaceContent a _        = return a

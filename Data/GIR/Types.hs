@@ -34,14 +34,22 @@ module Data.GIR.Types
 	, UnionContent(..)
 	, ClassContent(..)
 	, InterfaceContent(..)
-	, NamespaceContent(..)
 	, Include(..)
 	, Namespace(..)
 	, Package(..)
 	, Repository(..)
 	, newNamespace
 	, newFunction
-	, appendNamespace
+	, appendNamespaceAlias
+	, appendNamespaceFunction
+	, appendNamespaceConstant
+	, appendNamespaceClass
+	, appendNamespaceInterface
+	, appendNamespaceEnumeration
+	, appendNamespaceBitfield
+	, appendNamespaceUnion
+	, appendNamespaceRecord
+	, appendNamespaceCallback
 	, appendClass
 	, appendInterface
 	, appendUnion
@@ -278,19 +286,6 @@ data Bitfield = Bitfield
 	}
 	deriving (Show,Eq,Data,Typeable)
 
-data NamespaceContent =
-	  NsAlias Alias
-	| NsClass Class
-	| NsRecord Record
-	| NsFunction Function
-	| NsInterface Interface
-	| NsConstant Constant
-	| NsEnumeration Enumeration
-	| NsUnion Union
-	| NsBitfield Bitfield
-	| NsCallback Callback
-	deriving (Show,Eq,Data,Typeable)
-
 data Include = Include
 	{ includeName    :: String
 	, includeVersion :: String
@@ -306,7 +301,16 @@ data Namespace = Namespace
 	, namespaceSharedLibrary       :: String
 	, namespaceCIdentifierPrefixes :: String
 	, namespaceCSymbolPrefixes     :: String
-	, namespaceContent             :: [NamespaceContent]
+	, namespaceAliases             :: [Alias]
+	, namespaceFunctions           :: [Function]
+	, namespaceConstants           :: [Constant]
+	, namespaceClasses             :: [Class]
+	, namespaceInterfaces          :: [Interface]
+	, namespaceEnumerations        :: [Enumeration]
+	, namespaceBitfields           :: [Bitfield]
+	, namespaceUnions              :: [Union]
+	, namespaceRecords             :: [Record]
+	, namespaceCallbacks           :: [Callback]
 	}
 	deriving (Show,Eq,Data,Typeable)
 
@@ -325,15 +329,52 @@ newNamespace = Namespace
 	, namespaceSharedLibrary       = ""
 	, namespaceCIdentifierPrefixes = ""
 	, namespaceCSymbolPrefixes     = ""
-	, namespaceContent             = []
+	, namespaceAliases             = []
+	, namespaceFunctions           = []
+	, namespaceConstants           = []
+	, namespaceClasses             = []
+	, namespaceInterfaces          = []
+	, namespaceEnumerations        = []
+	, namespaceBitfields           = []
+	, namespaceUnions              = []
+	, namespaceRecords             = []
+	, namespaceCallbacks           = []
 	}
 
 newFunction :: Function
 newFunction = Function
 	{ functionName = "", functionCIdentifier = "", functionReturnValue = undefined, functionParameters = [] }
 
-appendNamespace :: Monad m => Namespace -> NamespaceContent -> m Namespace
-appendNamespace r i = return $ r { namespaceContent = i : namespaceContent r }
+--appendNamespace :: Monad m => Namespace -> ([a] -> N
+appendNamespaceAlias ::  Monad m => Namespace -> Alias -> m Namespace
+appendNamespaceAlias r i = return $ r { namespaceAliases = i : namespaceAliases r }
+
+appendNamespaceFunction ::  Monad m => Namespace -> Function -> m Namespace
+appendNamespaceFunction r i = return $ r { namespaceFunctions = i : namespaceFunctions r }
+
+appendNamespaceConstant ::  Monad m => Namespace -> Constant -> m Namespace
+appendNamespaceConstant r i = return $ r { namespaceConstants = i : namespaceConstants r }
+
+appendNamespaceClass ::  Monad m => Namespace -> Class -> m Namespace
+appendNamespaceClass r i = return $ r { namespaceClasses = i : namespaceClasses r }
+
+appendNamespaceInterface ::  Monad m => Namespace -> Interface -> m Namespace
+appendNamespaceInterface r i = return $ r { namespaceInterfaces = i : namespaceInterfaces r }
+
+appendNamespaceEnumeration ::  Monad m => Namespace -> Enumeration -> m Namespace
+appendNamespaceEnumeration r i = return $ r { namespaceEnumerations = i : namespaceEnumerations r }
+
+appendNamespaceBitfield ::  Monad m => Namespace -> Bitfield -> m Namespace
+appendNamespaceBitfield r i = return $ r { namespaceBitfields = i : namespaceBitfields r }
+
+appendNamespaceUnion ::  Monad m => Namespace -> Union -> m Namespace
+appendNamespaceUnion r i = return $ r { namespaceUnions = i : namespaceUnions r }
+
+appendNamespaceRecord ::  Monad m => Namespace -> Record -> m Namespace
+appendNamespaceRecord r i = return $ r { namespaceRecords = i : namespaceRecords r }
+
+appendNamespaceCallback ::  Monad m => Namespace -> Callback -> m Namespace
+appendNamespaceCallback r i = return $ r { namespaceCallbacks = i : namespaceCallbacks r }
 
 appendClass :: Monad m => Class -> ClassContent -> m Class
 appendClass r i = return $ r { classContent = i : classContent r }
