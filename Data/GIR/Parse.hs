@@ -76,7 +76,7 @@ mapRepository :: Element -> IO Repository
 mapRepository repository = do
 	ns       <- parseNamespace (findChildElem "namespace" repository)
 	package  <- parsePackage (findChildElem "package" repository)
-	includes <- mapM parseInclude $ findChildElems "includes" repository
+	includes <- mapM parseInclude $ findChildElems "include" repository
 	return $ Repository
 		{ repositoryVersion  = getAttrib "version" repository
 		, repositoryIncludes = includes
