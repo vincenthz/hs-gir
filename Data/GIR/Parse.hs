@@ -306,6 +306,7 @@ mapRepository repository = do
 			{ constantName        = getAttrib "name" e
 			, constantValue       = getAttrib "value" e
 			, constantType        = getType e
+			, constantCType       = getMaybeAttrib "c:type" e
 			}
 
 		getReturnValue :: Element -> ReturnValue

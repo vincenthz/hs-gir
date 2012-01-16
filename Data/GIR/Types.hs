@@ -230,6 +230,7 @@ data UnionContent =
 
 data Constant = Constant
 	{ constantName  :: String
+	, constantCType :: Maybe String
 	, constantValue :: String
 	, constantType  :: Type
 	}
