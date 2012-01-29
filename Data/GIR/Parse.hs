@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 -- |
 -- Module      : Data.GIR.Parse
 -- License     : BSD-style
@@ -9,11 +10,22 @@ module Data.GIR.Parse
 	( fromXml
 	, fromData
 	, fromFile
+	, GIRError(..)
 	) where
 
 import Text.XML.Light
 import Data.GIR.Types
+import Data.Typeable
 import Control.Monad
+import Control.Exception
+
+data GIRError = GIRError String String
+	deriving (Show,Eq,Typeable)
+
+instance Exception GIRError
+
+girError :: String -> Element -> a
+girError s e = throw $ GIRError s (simpleShowNode e)
 
 isText :: Content -> Bool
 isText (Text _) = True
@@ -45,14 +57,14 @@ findChildElems name e = findElem name $ elContent e
 findChildElem :: String -> Element -> Element
 findChildElem name e = case findChildElems name e of
 	[x] -> x
-	[]  -> error ("\n###########\nno child element found for " ++ name ++ " " ++ simpleShowNode e)
-	_   -> error ("\n###########\nmultiples attributes found for " ++ name)
+	[]  -> girError ("no child element found for " ++ name) e
+	_   -> girError ("multiples attributes found for " ++ name) e
 
 findChildMaybeElem :: String -> Element -> Maybe Element
 findChildMaybeElem name e = case findChildElems name e of
 	[x] -> Just x
 	[]  -> Nothing
-	_   -> error ("multiples attributes found for " ++ name)
+	_   -> girError ("multiples attributes found for " ++ name) e
 
 getAttribs :: String -> Element -> [String]
 getAttribs name e = map attrVal $ filter (\a -> fqname (attrKey a) == name) $ elAttribs e
@@ -60,14 +72,14 @@ getAttribs name e = map attrVal $ filter (\a -> fqname (attrKey a) == name) $ el
 getAttrib :: String -> Element -> String
 getAttrib name e = case getAttribs name e of
 	[x] -> x
-	[]  -> error ("\n############\nno attribute found for " ++ name ++ " in element: " ++ simpleShowNode e)
-	_   -> error ("\n############\nmultiples attributes found for " ++ name)
+	[]  -> girError ("no attribute found for " ++ name) e
+	_   -> girError ("multiples attributes found for " ++ name) e
 
 getMaybeAttrib :: String -> Element -> Maybe String
 getMaybeAttrib name e = case getAttribs name e of
 	[x] -> Just x
 	[]  -> Nothing
-	_   -> error ("multiples attributes found for " ++ name ++ " in element: " ++ simpleShowNode e)
+	_   -> girError ("multiples attributes found for " ++ name) e
 
 getText :: Element -> String
 getText e = concatMap toText $ filter isText $ elContent e
@@ -215,7 +227,9 @@ mapRepository repository = do
 			let class_ = Class
 				{ className = getAttrib "name" e
 				, classCSymbolPrefix = getSymbolPrefix e
-				, classCType = getAttrib "c:type" e
+				, classCType = case getMaybeAttrib "c:type" e of
+					Just a  -> a
+					Nothing -> getAttrib "glib:type-name" e
 				, classParent = getAttrib "parent" e
 				, classGlibTypeName = getAttrib "glib:type-name" e
 				, classGlibGetType = getAttrib "glib:get-type" e
