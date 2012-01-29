@@ -146,7 +146,7 @@ mapRepository repository = do
 			let union = Union
 				{ unionName = getAttrib "name" e
 				, unionCSymbolPrefix = getSymbolPrefix e
-				, unionCType = getAttrib "c:type" e
+				, unionCType = getMaybeAttrib "c:type" e
 				, unionGlibTypeName = getMaybeAttrib "glib:type-name" e
 				, unionGlibGetType = getMaybeAttrib "glib:get-type" e
 				, unionDoc = getDoc e
@@ -227,9 +227,7 @@ mapRepository repository = do
 			let class_ = Class
 				{ className = getAttrib "name" e
 				, classCSymbolPrefix = getSymbolPrefix e
-				, classCType = case getMaybeAttrib "c:type" e of
-					Just a  -> a
-					Nothing -> getAttrib "glib:type-name" e
+				, classCType = getMaybeAttrib "c:type" e
 				, classParent = getAttrib "parent" e
 				, classGlibTypeName = getAttrib "glib:type-name" e
 				, classGlibGetType = getAttrib "glib:get-type" e

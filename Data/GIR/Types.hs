@@ -183,7 +183,7 @@ data Constructor = Constructor
 data Class = Class
 	{ className           :: String
 	, classCSymbolPrefix  :: String
-	, classCType          :: String
+	, classCType          :: Maybe String
 	, classParent         :: String
 	, classGlibTypeName   :: String
 	, classGlibGetType    :: String
@@ -258,7 +258,7 @@ data Interface = Interface
 
 data Union = Union
 	{ unionName :: String
-	, unionCType :: String
+	, unionCType :: Maybe String
 	, unionCSymbolPrefix :: String
 	, unionGlibTypeName :: Maybe String
 	, unionGlibGetType  :: Maybe String
