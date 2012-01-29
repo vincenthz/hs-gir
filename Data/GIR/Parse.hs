@@ -19,6 +19,9 @@ isText :: Content -> Bool
 isText (Text _) = True
 isText _        = False
 
+simpleShowNode :: Element -> String
+simpleShowNode e = "node " ++ elFQname e ++ " " ++ show (elAttribs e)
+
 fqname :: QName -> String
 fqname q = case qPrefix q of
 	Nothing -> qName q
@@ -42,7 +45,7 @@ findChildElems name e = findElem name $ elContent e
 findChildElem :: String -> Element -> Element
 findChildElem name e = case findChildElems name e of
 	[x] -> x
-	[]  -> error ("\n###########\nno element found for " ++ name)
+	[]  -> error ("\n###########\nno child element found for " ++ name ++ " " ++ simpleShowNode e)
 	_   -> error ("\n###########\nmultiples attributes found for " ++ name)
 
 findChildMaybeElem :: String -> Element -> Maybe Element
@@ -57,14 +60,14 @@ getAttribs name e = map attrVal $ filter (\a -> fqname (attrKey a) == name) $ el
 getAttrib :: String -> Element -> String
 getAttrib name e = case getAttribs name e of
 	[x] -> x
-	[]  -> error ("\n############\nno attribute found for " ++ name ++ " element: " ++ show e)
+	[]  -> error ("\n############\nno attribute found for " ++ name ++ " in element: " ++ simpleShowNode e)
 	_   -> error ("\n############\nmultiples attributes found for " ++ name)
 
 getMaybeAttrib :: String -> Element -> Maybe String
 getMaybeAttrib name e = case getAttribs name e of
 	[x] -> Just x
 	[]  -> Nothing
-	_   -> error ("multiples attributes found for " ++ name)
+	_   -> error ("multiples attributes found for " ++ name ++ " in element: " ++ simpleShowNode e)
 
 getText :: Element -> String
 getText e = concatMap toText $ filter isText $ elContent e
