@@ -64,8 +64,8 @@ data Doc = Doc (Maybe String)
 type Deprecated = Maybe (String, String) -- (text, version)
 
 data Type =
-	  BasicType (String) (String) -- (type.name, type.c:type)
-	| ArrayType Type
+	  BasicType String String String -- ^ namespace name c:type
+	| ArrayType (String,String) String Type   -- ^ (namespace,name) c:type BasicType
 	deriving (Show,Eq,Data,Typeable)
 
 data TransferOwnership =

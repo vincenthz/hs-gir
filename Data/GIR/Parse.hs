@@ -18,6 +18,8 @@ import Data.GIR.Types
 import Data.Typeable
 import Control.Monad
 import Control.Exception
+import Control.Arrow (second)
+import Data.List (unfoldr)
 
 data GIRError = GIRError String String
 	deriving (Show,Eq,Typeable)
@@ -30,6 +32,8 @@ girError s e = throw $ GIRError s (simpleShowNode e)
 isText :: Content -> Bool
 isText (Text _) = True
 isText _        = False
+
+splitOn delim = takeWhile (not . null) . unfoldr (Just . (second $ drop 1) . break (==delim))
 
 simpleShowNode :: Element -> String
 simpleShowNode e = "node " ++ elFQname e ++ " " ++ show (elAttribs e)
@@ -376,11 +380,16 @@ mapRepository repository = do
 		getType :: Element -> Type
 		getType e = case a of
 			Nothing  -> parseType $ findChildElem "type" e
-			Just arr -> ArrayType $ parseType $ findChildElem "type" arr
+			Just arr -> ArrayType (parseName $ getAttrib "name" e) (getAttrib "c:type" e) $ parseType $ findChildElem "type" arr
 			where
-				parseType c = BasicType n (maybe n id t)
+				parseName n = case splitOn '.' n of
+					[name]           -> ("",name)
+					[namespace,name] -> (namespace,name)
+					_                -> girError "unrecognized name" e
+
+				parseType c = BasicType namespace name (maybe name id t)
 					where
-						n = getAttrib "name" c
+						(namespace, name) = parseName $ getAttrib "name" c
 						t = getMaybeAttrib "c:type" c
 				a = findChildMaybeElem "array" e
 
