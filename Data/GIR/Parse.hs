@@ -117,7 +117,7 @@ mapRepository repository = do
 			let namespace = newNamespace
 				{ namespaceName                = getAttrib "name" e
 				, namespaceVersion             = getAttrib "version" e
-				, namespaceSharedLibrary       = getAttrib "shared-library" e
+				, namespaceSharedLibrary       = splitOn ',' $ getAttrib "shared-library" e
 				, namespaceCIdentifierPrefixes = getAttrib "c:identifier-prefixes" e
 				, namespaceCSymbolPrefixes     = getSymbolPrefixes e
 				}

@@ -299,7 +299,7 @@ data Package = Package { packageName :: String }
 data Namespace = Namespace
 	{ namespaceName                :: String
 	, namespaceVersion             :: String
-	, namespaceSharedLibrary       :: String
+	, namespaceSharedLibrary       :: [String]
 	, namespaceCIdentifierPrefixes :: String
 	, namespaceCSymbolPrefixes     :: String
 	, namespaceAliases             :: [Alias]
@@ -327,7 +327,7 @@ newNamespace :: Namespace
 newNamespace = Namespace
 	{ namespaceName                = ""
 	, namespaceVersion             = ""
-	, namespaceSharedLibrary       = ""
+	, namespaceSharedLibrary       = []
 	, namespaceCIdentifierPrefixes = ""
 	, namespaceCSymbolPrefixes     = ""
 	, namespaceAliases             = []
